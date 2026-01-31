@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="navbar">
+    <h2>MiniSocial</h2>
+    <div>
+        <a href="/post">New post</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+
+<div class="feed">
+
+{% for post in posts %}
+<div class="post-card">
+
+    <div class="post-header">
+        <a href="/profile/{{ post.user_id }}">
+            <strong>@{{ post.username }}</strong>
+        </a>
+    </div>
+
+    {% if post.image %}
+        <img class="post-image"
+             src="{{ url_for('static', filename='uploads/' + post.image) }}">
+    {% endif %}
+
+    <div class="post-content">
+        {{ post.content }}
+    </div>
+
+    <div class="post-actions">
+        <a href="/like/{{ post.id }}" class="like-btn">❤️ Like</a>
+        <span>{{ post.like_count }} likes</span>
+    </div>
+
+    <div class="comments">
+        {% for c in comments %}
+            {% if c.post_id == post.id %}
+                <div class="comment">
+                    <strong>@{{ c.username }}</strong> {{ c.content }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <form class="comment-form" method="POST" action="/comment/{{ post.id }}">
+        <input type="text" name="content" placeholder="Add comment..." required>
+        <button type="submit">Post</button>
+    </form>
+
+</div>
+{% endfor %}
+
+</div>
+
+</body>
+</html>
